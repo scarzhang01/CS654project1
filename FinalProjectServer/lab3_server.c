@@ -33,6 +33,14 @@
 
 #define TROLL_PATH "./lab3_troll"
 
+void printBits(uint16_t num) {
+  int i = 0;
+  for (; i < (2 * 8); i++) {
+    printf("%i ", num & 0x01);
+    num = num >> 1;
+  }
+}
+
 int main(int argc, char *argv[])
 {
 	double troll_pct = 0.3;		   // Perturbation % for the troll (if needed)
@@ -127,70 +135,83 @@ int main(int argc, char *argv[])
 	unsigned char n_read = 0;
 	while (1)
 	{
-		//
+	  	//
 		// WRITE ME: Read a line of input (Hint: use fgetc(stdin) to read each character)
 		//
-		sptr = str;
-		printf("> ");
-
+	  //		sptr = str;
+	  //	printf("> ");
+	  //
 		// Read a line of input
-		while ((sptr < str + MSG_BYTES_MSG - 1) &&
-			((*sptr++ = fgetc(stdin)) != '\n'));
-		if (sptr >= str + MSG_BYTES_MSG - 1)
-			printf("Warning: %d characters exceeded\n", MSG_BYTES_MSG);
-		*(--sptr) = 0; // terminate string, removing newline
-
-		if (strcmp(str, "quit") == 0)
-			break;
+	  //	while ((sptr < str + MSG_BYTES_MSG - 1) &&
+	  //		((*sptr++ = fgetc(stdin)) != '\n'));
+	  //	if (sptr >= str + MSG_BYTES_MSG - 1)
+	  //		printf("Warning: %d characters exceeded\n", MSG_BYTES_MSG);
+	  //	*(--sptr) = 0; // terminate string, removing newline
+	  //
+	  //	if (strcmp(str, "quit") == 0)
+	  //		break;
 
 		// get length of message body
-		for (n_read = 0; str[n_read] != '\0'; ++n_read);
+	  //	for (n_read = 0; str[n_read] != '\0'; ++n_read);
 
 		//
 		// WRITE ME: Compute crc (only lowest 16 bits are returned)
 		//
 		// get crc of msg
-		int crc = pc_crc16(str, n_read);
+	  //	int crc = pc_crc16(str, n_read);
         // swap the bytes for crc using bit operation
-        crc = ((crc << 8) & 0xff00) | ((crc >> 8) & 0x00ff);
+        //crc = ((crc << 8) & 0xff00) | ((crc >> 8) & 0x00ff);
 		int ack = 0;
-		int attempts = 0;
-		unsigned char s;
+	//	int attempts = 0;
+	//	unsigned char s;
 		int byte_read;
 		
-		int ball_x;
+		uint16_t ball_x;
+		uint16_t ball_y;
 
 		while (!ack)
 		{
-			printf("Sending (attempt %d)...\n", ++attempts);
+		  //printf("Sending (attempt %d)...\n", ++attempts);
 
 			//
 			// WRITE ME: Send message
 			//
-			s = 0x0;
-			write(ofd, &s, 1);
-			write(ofd, &crc, 2);
-			write(ofd, &n_read, 1);
-			write(ofd, str, n_read);
+			//s = 0x0;
+			//write(ofd, &s, 1);
+			//write(ofd, &crc, 2);
+			//write(ofd, &n_read, 1);
+			//write(ofd, str, n_read);
 
-			printf("Message sent, waiting for ack...\n ");
+			//printf("Message sent, waiting for ack...\n ");
 
 			//
 			// WRITE ME: Wait for MSG_ACK or MSG_NACK
 			//
             // a buffer to read the ack/nack msg
 			byte_read = 0;
-            // a new pointer only used to read ack/nack msg
-            char new_pr[2];
-            // read the msg
-			while (byte_read < 2)
+
+			// a new pointer only used to read ack/nack msg
+			//char new_pr[2];
+			// read the msg
+			//while (byte_read < 2)
+			  //{
+			  //byte_read += read(ifd, new_pr, 2);
+				//}
+			// receive and print the x position of ball in terminal
+			//ball_x = (new_pr[1] << 8) | new_pr[0];
+			//printf("ball_x: %d and ball_y: %d\n", ball_x, 0);
+
+			// a new pointer only used to read ack/nack msg
+			char new_pr[4];
+			// read the msg
+			while (byte_read < 4)
 			{
-				byte_read += read(ifd, new_pr, 2);
+				byte_read += read(ifd, new_pr, 4);
 			}
-            // receive and print the x position of ball in terminal
-			ball_x = (new_pr[1] << 8) | new_pr[0];
-			//ball_x = (uint16_t)new_pr[0];
-			printf("%x\n", ball_x);
+			// receive and print the x position of ball in terminal
+			ball_x = (new_pr[1] << 8) | new_pr[2];
+			ball_y = (new_pr[0] << 8) | new_pr[3];
+			printf("ball_x: %d and ball_y: %d\n", ball_x, ball_y);
 		}
 		
 		printf("\n");

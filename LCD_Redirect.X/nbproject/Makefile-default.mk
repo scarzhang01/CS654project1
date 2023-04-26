@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=main.c hs_uart.c /scratch/team-3a/Desktop/LCD_Redirect.X/touch.c /scratch/team-3a/Desktop/LCD_Redirect.X/motor.c
+SOURCEFILES_QUOTED_IF_SPACED=main.c hs_uart.c /scratch/team-3a/Desktop/CS654project1/LCD_Redirect.X/motor.c /scratch/team-3a/Desktop/CS654project1/LCD_Redirect.X/touch.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/hs_uart.o ${OBJECTDIR}/_ext/145141504/touch.o ${OBJECTDIR}/_ext/145141504/motor.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/hs_uart.o.d ${OBJECTDIR}/_ext/145141504/touch.o.d ${OBJECTDIR}/_ext/145141504/motor.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/hs_uart.o ${OBJECTDIR}/_ext/627957554/motor.o ${OBJECTDIR}/_ext/627957554/touch.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/hs_uart.o.d ${OBJECTDIR}/_ext/627957554/motor.o.d ${OBJECTDIR}/_ext/627957554/touch.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/hs_uart.o ${OBJECTDIR}/_ext/145141504/touch.o ${OBJECTDIR}/_ext/145141504/motor.o
+OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/hs_uart.o ${OBJECTDIR}/_ext/627957554/motor.o ${OBJECTDIR}/_ext/627957554/touch.o
 
 # Source Files
-SOURCEFILES=main.c hs_uart.c /scratch/team-3a/Desktop/LCD_Redirect.X/touch.c /scratch/team-3a/Desktop/LCD_Redirect.X/motor.c
+SOURCEFILES=main.c hs_uart.c /scratch/team-3a/Desktop/CS654project1/LCD_Redirect.X/motor.c /scratch/team-3a/Desktop/CS654project1/LCD_Redirect.X/touch.c
 
 
 
@@ -109,19 +109,19 @@ ${OBJECTDIR}/hs_uart.o: hs_uart.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  hs_uart.c  -o ${OBJECTDIR}/hs_uart.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/hs_uart.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1    -omf=coff -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp=${DFP_DIR}/xc16
 	@${FIXDEPS} "${OBJECTDIR}/hs_uart.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
-${OBJECTDIR}/_ext/145141504/touch.o: /scratch/team-3a/Desktop/LCD_Redirect.X/touch.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/_ext/145141504" 
-	@${RM} ${OBJECTDIR}/_ext/145141504/touch.o.d 
-	@${RM} ${OBJECTDIR}/_ext/145141504/touch.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  /scratch/team-3a/Desktop/LCD_Redirect.X/touch.c  -o ${OBJECTDIR}/_ext/145141504/touch.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/145141504/touch.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1    -omf=coff -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp=${DFP_DIR}/xc16
-	@${FIXDEPS} "${OBJECTDIR}/_ext/145141504/touch.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+${OBJECTDIR}/_ext/627957554/motor.o: /scratch/team-3a/Desktop/CS654project1/LCD_Redirect.X/motor.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/627957554" 
+	@${RM} ${OBJECTDIR}/_ext/627957554/motor.o.d 
+	@${RM} ${OBJECTDIR}/_ext/627957554/motor.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  /scratch/team-3a/Desktop/CS654project1/LCD_Redirect.X/motor.c  -o ${OBJECTDIR}/_ext/627957554/motor.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/627957554/motor.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1    -omf=coff -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp=${DFP_DIR}/xc16
+	@${FIXDEPS} "${OBJECTDIR}/_ext/627957554/motor.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
-${OBJECTDIR}/_ext/145141504/motor.o: /scratch/team-3a/Desktop/LCD_Redirect.X/motor.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/_ext/145141504" 
-	@${RM} ${OBJECTDIR}/_ext/145141504/motor.o.d 
-	@${RM} ${OBJECTDIR}/_ext/145141504/motor.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  /scratch/team-3a/Desktop/LCD_Redirect.X/motor.c  -o ${OBJECTDIR}/_ext/145141504/motor.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/145141504/motor.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1    -omf=coff -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp=${DFP_DIR}/xc16
-	@${FIXDEPS} "${OBJECTDIR}/_ext/145141504/motor.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+${OBJECTDIR}/_ext/627957554/touch.o: /scratch/team-3a/Desktop/CS654project1/LCD_Redirect.X/touch.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/627957554" 
+	@${RM} ${OBJECTDIR}/_ext/627957554/touch.o.d 
+	@${RM} ${OBJECTDIR}/_ext/627957554/touch.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  /scratch/team-3a/Desktop/CS654project1/LCD_Redirect.X/touch.c  -o ${OBJECTDIR}/_ext/627957554/touch.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/627957554/touch.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1    -omf=coff -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp=${DFP_DIR}/xc16
+	@${FIXDEPS} "${OBJECTDIR}/_ext/627957554/touch.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 else
 ${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
@@ -138,19 +138,19 @@ ${OBJECTDIR}/hs_uart.o: hs_uart.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  hs_uart.c  -o ${OBJECTDIR}/hs_uart.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/hs_uart.o.d"        -g -omf=coff -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp=${DFP_DIR}/xc16
 	@${FIXDEPS} "${OBJECTDIR}/hs_uart.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
-${OBJECTDIR}/_ext/145141504/touch.o: /scratch/team-3a/Desktop/LCD_Redirect.X/touch.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/_ext/145141504" 
-	@${RM} ${OBJECTDIR}/_ext/145141504/touch.o.d 
-	@${RM} ${OBJECTDIR}/_ext/145141504/touch.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  /scratch/team-3a/Desktop/LCD_Redirect.X/touch.c  -o ${OBJECTDIR}/_ext/145141504/touch.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/145141504/touch.o.d"        -g -omf=coff -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp=${DFP_DIR}/xc16
-	@${FIXDEPS} "${OBJECTDIR}/_ext/145141504/touch.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+${OBJECTDIR}/_ext/627957554/motor.o: /scratch/team-3a/Desktop/CS654project1/LCD_Redirect.X/motor.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/627957554" 
+	@${RM} ${OBJECTDIR}/_ext/627957554/motor.o.d 
+	@${RM} ${OBJECTDIR}/_ext/627957554/motor.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  /scratch/team-3a/Desktop/CS654project1/LCD_Redirect.X/motor.c  -o ${OBJECTDIR}/_ext/627957554/motor.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/627957554/motor.o.d"        -g -omf=coff -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp=${DFP_DIR}/xc16
+	@${FIXDEPS} "${OBJECTDIR}/_ext/627957554/motor.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
-${OBJECTDIR}/_ext/145141504/motor.o: /scratch/team-3a/Desktop/LCD_Redirect.X/motor.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/_ext/145141504" 
-	@${RM} ${OBJECTDIR}/_ext/145141504/motor.o.d 
-	@${RM} ${OBJECTDIR}/_ext/145141504/motor.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  /scratch/team-3a/Desktop/LCD_Redirect.X/motor.c  -o ${OBJECTDIR}/_ext/145141504/motor.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/145141504/motor.o.d"        -g -omf=coff -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp=${DFP_DIR}/xc16
-	@${FIXDEPS} "${OBJECTDIR}/_ext/145141504/motor.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+${OBJECTDIR}/_ext/627957554/touch.o: /scratch/team-3a/Desktop/CS654project1/LCD_Redirect.X/touch.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/627957554" 
+	@${RM} ${OBJECTDIR}/_ext/627957554/touch.o.d 
+	@${RM} ${OBJECTDIR}/_ext/627957554/touch.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  /scratch/team-3a/Desktop/CS654project1/LCD_Redirect.X/touch.c  -o ${OBJECTDIR}/_ext/627957554/touch.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/627957554/touch.o.d"        -g -omf=coff -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp=${DFP_DIR}/xc16
+	@${FIXDEPS} "${OBJECTDIR}/_ext/627957554/touch.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 
