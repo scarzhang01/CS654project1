@@ -33,6 +33,14 @@
 
 #define TROLL_PATH "./lab3_troll"
 
+#define KPX 0.0002
+#define KDX 0.0001
+#define KIX 0.000001
+
+#define KPY 0.0002
+#define KDY 0.0001
+#define KIY 0.000001
+
 void printBits(uint16_t num) {
   int i = 0;
   for (; i < (2 * 8); i++) {
@@ -133,6 +141,13 @@ int main(int argc, char *argv[])
 	char *sptr;
 	// length of str/message body
 	unsigned char n_read = 0;
+    
+    uint16_t eXp = 0;
+    uint16_t eYp = 0;
+    
+    uint16_t errSumX = 0;
+    uint16_t ERRSumY = 0;
+    
 	while (1)
 	{
 	  	//
@@ -212,6 +227,42 @@ int main(int argc, char *argv[])
 			ball_x = (new_pr[1] << 8) | new_pr[2];
 			ball_y = (new_pr[0] << 8) | new_pr[3];
 			printf("ball_x: %d and ball_y: %d\n", ball_x, ball_y);
+            
+            uint16_t errX = ball_x - 1635;
+            uint16_t errY = ball_y - 1500;
+            errSumX += errX;
+            if (errSumX > 30000 || errSumX < -30000) errSumX = 0;
+            errSumY += errY;
+            if (errSumY > 30000 || errSumY < -30000) errSumY = 0;
+
+            double angleX = 0.0 - KPX * (double)errX * (3.1415926 / 2.0) - KDX * (double)(errX - eXp) / 0.05 * (3.1415926 / 2.0) - KIX * (double)(errSumX) * 0.05 * (3.1415926 / 2.0);
+            double angleY = 0.0 - KPY * (double)errY * (3.1415926 / 2.0) - KDY * (double)(errY - eYp) / 0.05 * (3.1415926 / 2.0) - KIY * (double)(errSumY) * 0.05 * (3.1415926 / 2.0);
+            
+            eXp = errX;
+            eYp = errY;
+            
+            double m1 = ((2.1 - 0.9) / 3.1415926 * (angleX + 3.1415926 / 2.0) + 0.9) * 0.3 + pm1 * 0.7;
+            double m2 = ((2.1 - 0.9) / 3.1415926 * (angleY + 3.1415926 / 2.0) + 0.9) * 0.3 + pm2 * 0.7;
+            
+            pm1 = m1;
+            pm2 = m2;
+            
+            if (m1 > 2.1) m1 = 2.1;
+            if (m1 < 0.9) m1 = 0.9;
+            if (m2 > 2.1) m2 = 2.1;
+            if (m2 < 0.9) m2 = 0.9;
+            
+            uint16_t dutyX = 4000.0 * (20.0 - m1) / 20.0;
+            uint16_t dutyY = 4000.0 * (20.0 - m2) / 20.0;
+            
+            char msg[4];
+            
+            msg[0] = dutyX & 0xff;
+            msg[1] = (dutyX >> 8) & 0xff;
+            msg[2] = dutyY & 0xff;
+            msg[3] = (dutyY >> 8) & 0xff;
+            
+            write(ofd, msg, 4);
 		}
 		
 		printf("\n");
