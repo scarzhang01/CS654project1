@@ -41,6 +41,10 @@
 #define KDY 0.0001
 #define KIY 0.000001
 
+#define BUTTERFILT_ORD 5
+double b[BUTTERFILT_ORD + 1] = {9.2540162, 4.6270081, 9.2540162, 9.2540162, 4.6270081, 9.2540162};
+double a[BUTTERFILT_ORD + 1] = {1.0, -4.837342, 9.3625201, -9.062853, 4.3875359, -0.849859};
+
 void printBits(uint16_t num) {
   int i = 0;
   for (; i < (2 * 8); i++) {
@@ -48,6 +52,61 @@ void printBits(uint16_t num) {
     num = num >> 1;
   }
 }
+
+int getx_butter(int cur, double * a, double * b)
+{
+	double retval;
+	int i;
+
+	static double inx[BUTTERFILT_ORD+1];
+	static double outx[BUTTERFILT_ORD+1];
+	
+	// Perform sample shift
+	for (i = BUTTERFILT_ORD; i > 0; --i) {
+		inx[i] = inx[i-1];
+		outx[i] = outx[i-1];
+	}
+	inx[0] = cur;
+
+	// Compute filtered value
+	retval = 0;
+	for (i = 0; i < BUTTERFILT_ORD+1; ++i) {
+		retval += inx[i] * b[i];
+		if (i > 0)
+			retval -= outx[i] * a[i];
+	}
+	outx[0] = retval;
+
+	return retval;
+}
+
+int gety_butter(int cur, double * a, double * b)
+{
+	double retval;
+	int i;
+
+	static double iny[BUTTERFILT_ORD+1];
+	static double outy[BUTTERFILT_ORD+1];
+	
+	// Perform sample shift
+	for (i = BUTTERFILT_ORD; i > 0; --i) {
+		iny[i] = iny[i-1];
+		outy[i] = outy[i-1];
+	}
+	iny[0] = cur;
+
+	// Compute filtered value
+	retval = 0;
+	for (i = 0; i < BUTTERFILT_ORD+1; ++i) {
+		retval += iny[i] * b[i];
+		if (i > 0)
+			retval -= outy[i] * a[i];
+	}
+	outy[0] = retval;
+
+	return retval;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -227,6 +286,9 @@ int main(int argc, char *argv[])
 			ball_x = (new_pr[1] << 8) | new_pr[2];
 			ball_y = (new_pr[0] << 8) | new_pr[3];
 			printf("ball_x: %d and ball_y: %d\n", ball_x, ball_y);
+            
+            ball_x = (uint16_t)getx_butter(ball_x, b, a);
+            ball_y = (uint16_t)gety_butter(ball_y, b, a);
             
             uint16_t errX = ball_x - 1635;
             uint16_t errY = ball_y - 1500;
