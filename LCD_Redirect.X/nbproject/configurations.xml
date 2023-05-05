@@ -7,9 +7,9 @@
       <itemPath>lcd.h</itemPath>
       <itemPath>types.h</itemPath>
       <itemPath>hs_uart.h</itemPath>
-      <itemPath>/scratch/team-3a/Desktop/LCD_Redirect.X/crc16.h</itemPath>
-      <itemPath>/scratch/team-3a/Desktop/LCD_Redirect.X/touch.h</itemPath>
-      <itemPath>/scratch/team-3a/Desktop/LCD_Redirect.X/motor.h</itemPath>
+      <itemPath>/scratch/team-5a/CS654project1/LCD_Redirect.X/crc16.h</itemPath>
+      <itemPath>/scratch/team-5a/CS654project1LCD_Redirect.X/touch.h</itemPath>
+      <itemPath>/scratch/team-5a/CS654project1LCD_Redirect.X/motor.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -20,8 +20,8 @@
                    projectFiles="true">
       <itemPath>main.c</itemPath>
       <itemPath>hs_uart.c</itemPath>
-      <itemPath>/scratch/team-3a/Desktop/CS654project1/LCD_Redirect.X/motor.c</itemPath>
-      <itemPath>/scratch/team-3a/Desktop/CS654project1/LCD_Redirect.X/touch.c</itemPath>
+      <itemPath>/scratch/team-5a/CS654project1/LCD_Redirect.X/motor.c</itemPath>
+      <itemPath>/scratch/team-5a/CS654project1/LCD_Redirect.X/touch.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

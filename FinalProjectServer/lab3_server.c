@@ -205,7 +205,10 @@ int main(int argc, char *argv[])
     uint16_t eYp = 0;
     
     uint16_t errSumX = 0;
-    uint16_t ERRSumY = 0;
+    uint16_t errSumY = 0;
+    
+    double pm1 = 0.9;
+    double pm2 = 0.9;
     
 	while (1)
 	{
@@ -235,6 +238,7 @@ int main(int argc, char *argv[])
 	  //	int crc = pc_crc16(str, n_read);
         // swap the bytes for crc using bit operation
         //crc = ((crc << 8) & 0xff00) | ((crc >> 8) & 0x00ff);
+        
 		int ack = 0;
 	//	int attempts = 0;
 	//	unsigned char s;
@@ -276,19 +280,23 @@ int main(int argc, char *argv[])
 			//printf("ball_x: %d and ball_y: %d\n", ball_x, 0);
 
 			// a new pointer only used to read ack/nack msg
-			char new_pr[4];
-			// read the msg
+            
+			unsigned char new_pr[4];
+            
 			while (byte_read < 4)
 			{
-				byte_read += read(ifd, new_pr, 4);
+				byte_read += read(ifd, new_pr + byte_read, 4 - byte_read);
 			}
 			// receive and print the x position of ball in terminal
-			ball_x = (new_pr[1] << 8) | new_pr[2];
-			ball_y = (new_pr[0] << 8) | new_pr[3];
+//			ball_x = (((new_pr[1] << 8) & 0xff00) | (new_pr[0] & 0xff)) & 0xffff;
+//			ball_y = (((new_pr[3] << 8) & 0xff00) | (new_pr[2] & 0xff)) & 0xffff;
+            ball_x = (new_pr[1] << 8) | new_pr[0];
+			ball_y = (new_pr[3] << 8) | new_pr[2];
 			printf("ball_x: %d and ball_y: %d\n", ball_x, ball_y);
             
-            ball_x = (uint16_t)getx_butter(ball_x, b, a);
-            ball_y = (uint16_t)gety_butter(ball_y, b, a);
+//            ball_x = (uint16_t)getx_butter(ball_x, b, a);
+//            ball_y = (uint16_t)gety_butter(ball_y, b, a);
+//            printf("FILTERED!!! ball_x: %d and ball_y: %d\n", ball_x, ball_y);
             
             uint16_t errX = ball_x - 1635;
             uint16_t errY = ball_y - 1500;
@@ -314,8 +322,8 @@ int main(int argc, char *argv[])
             if (m2 > 2.1) m2 = 2.1;
             if (m2 < 0.9) m2 = 0.9;
             
-            uint16_t dutyX = 4000.0 * (20.0 - m1) / 20.0;
-            uint16_t dutyY = 4000.0 * (20.0 - m2) / 20.0;
+            uint16_t dutyX = (uint16_t)(4000.0 * (20.0 - m1) / 20.0);
+            uint16_t dutyY = (uint16_t)(4000.0 * (20.0 - m2) / 20.0);
             
             char msg[4];
             
