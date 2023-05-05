@@ -332,7 +332,8 @@ int main(int argc, char *argv[])
             msg[2] = dutyY & 0xff;
             msg[3] = (dutyY >> 8) & 0xff;
             
-            write(ofd, msg, 4);
+	printf("dutyX: %d and dutyY: %d\n", dutyX, dutyY);
+	write(ofd, msg, 4);
 		}
 		
 		printf("\n");

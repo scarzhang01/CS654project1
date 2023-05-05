@@ -110,27 +110,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt(void)
         ySamples[index] = touch_read();
     }
     
-    // Send data
-//    for (index = 0; index < 5; index++)
-//    {
-//        __C30_UART = 1;
-//        lcd_locate(0, 2);
-//        lcd_printf("x: %05d", xSamples[2]);
-//        lcd_locate(0, 3);
-//        lcd_printf("y: %05d", ySamples[2]);
-//        __C30_UART = 2;
-//        if (xSamples[index] < 200 || xSamples[index] > 3000 || ySamples[index] < 200 || ySamples[index] > 3000) continue;
-//        firstByte_x = (xSamples[index]) & 0xff;
-//        uart2_send_8(firstByte_x);
-//        secondByte_x = (xSamples[index] >> 8) & 0xff;
-//        uart2_send_8(secondByte_x);
-//        
-//        firstByte_y = (ySamples[index]) & 0xff;
-//        uart2_send_8(firstByte_y);
-//        secondByte_y = (ySamples[index] >> 8) & 0xff;
-//        uart2_send_8(secondByte_y);
-//    }
-    
+    // Print x and y
     uint16_t mX = median(xSamples);
     uint16_t mY = median(ySamples);
     __C30_UART = 1;
@@ -144,48 +124,13 @@ void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt(void)
     secondByte_x = (mX >> 8) & 0xff;
     firstByte_y = (mY) & 0xff;
     secondByte_y = (mY >> 8) & 0xff;
-//    lcd_locate(0, 4);
-//    lcd_printf("x1: %x", firstByte_x);
-//    lcd_locate(0, 5);
-//    lcd_printf("x2: %x", secondByte_x);
-//    lcd_locate(0, 6);
-//    lcd_printf("y1: %x", firstByte_y);
-//    lcd_locate(0, 7);
-//    lcd_printf("y2: %x", secondByte_y);
-    
-    uart2_send_8(firstByte_x);
-    
-    uart2_send_8(secondByte_x);
-    
-    uart2_send_8(firstByte_y);
-    
-    uart2_send_8(secondByte_y);
-    
     
     // Send data
-    // Print x and y
-//    __C30_UART = 1;
-//    lcd_locate(0, 4);
-//    lcd_printf("%05d", xSamples[i]);
-//    lcd_locate(0, 5);
-//    lcd_printf("%05d", ySamples[i]);
-//    __C30_UART = 2;
-    // Send x
-//    int k=0;
-//    for (k=0; k<5;k++){
-//        
-//    firstByte_x = (xSamples[i]) & 0xff;
-//    uart2_send_8(firstByte_x);
-//    secondByte_x = (xSamples[i] >> 8) & 0xff;
-//    uart2_send_8(secondByte_x);
-//    
-//    firstByte_y = (ySamples[i]) & 0xff;
-//    uart2_send_8(firstByte_y);
-//    secondByte_y = (ySamples[i] >> 8) & 0xff;
-//    uart2_send_8(secondByte_y);
-//    }
-
-
+    uart2_send_8(firstByte_x);
+    uart2_send_8(secondByte_x);
+    uart2_send_8(firstByte_y);
+    uart2_send_8(secondByte_y);
+    
     CLEARBIT(IFS0bits.T1IF);
 }
 
@@ -222,7 +167,8 @@ int main()
     lcd_initialize();
     lcd_clear();
     adc_init();
-
+    motor_init(0);
+    motor_init(1);
 
     __delay_ms(2000);
     backLight(100);
@@ -237,25 +183,40 @@ int main()
     
      // Current letter
     uint8_t dataReceived;
-
-//     // Arrays for samples
-//    uint16_t xSamples[5];
-//    uint16_t ySamples[5];
+    // Current str
+    unsigned char new_pr[4];
+    int byte_read = 0;
+    uint16_t dutyX;
+    uint16_t dutyY;
+            
     timer_init();
     
     // Populate buffer
     while (1)
     {
         // If we receive data
-        //if (uart2_recv(&dataReceived) == 0)
-        //{     
+        if (uart2_recv(&dataReceived) == 0)
+        {     
+            new_pr[byte_read] = dataReceived;
+            byte_read++;
             
-//            __C30_UART = 1;
-//            lcd_locate(0, 3);
-//            lcd_printf("Finished");
-//            __C30_UART = 2;
+            // If we received an entire packet
+            if (byte_read == 4) {
+                dutyX = (new_pr[1] << 8) | new_pr[0];
+                dutyY = (new_pr[3] << 8) | new_pr[2];
+                
+                __C30_UART = 1;
+                lcd_locate(0, 5);
+                lcd_printf("dutyX:%d,dutyY:%d\n", dutyX, dutyY);
+                __C30_UART = 2;
+                
+                motor_set_duty(0, dutyX);
+                motor_set_duty(1, dutyY);
+                
+                byte_read = 0;
+            }
             
-        //}
+        }
     }
     
     
