@@ -34,8 +34,8 @@
 
 #define TROLL_PATH "./lab3_troll"
 
-#define KPX 0.0004
-#define KDX 0.0003
+#define KPX 0.0005
+#define KDX 0.0002
 #define KIX 0.0000
 
 #define KPY 0.000
@@ -216,36 +216,10 @@ int main(int argc, char *argv[])
     
 	while (1)
 	{
-	  	//
-		// WRITE ME: Read a line of input (Hint: use fgetc(stdin) to read each character)
-		//
-	  //		sptr = str;
-	  //	printf("> ");
-	  //
-		// Read a line of input
-	  //	while ((sptr < str + MSG_BYTES_MSG - 1) &&
-	  //		((*sptr++ = fgetc(stdin)) != '\n'));
-	  //	if (sptr >= str + MSG_BYTES_MSG - 1)
-	  //		printf("Warning: %d characters exceeded\n", MSG_BYTES_MSG);
-	  //	*(--sptr) = 0; // terminate string, removing newline
-	  //
-	  //	if (strcmp(str, "quit") == 0)
-	  //		break;
 
-		// get length of message body
-	  //	for (n_read = 0; str[n_read] != '\0'; ++n_read);
-
-		//
-		// WRITE ME: Compute crc (only lowest 16 bits are returned)
-		//
-		// get crc of msg
-	  //	int crc = pc_crc16(str, n_read);
-        // swap the bytes for crc using bit operation
-        //crc = ((crc << 8) & 0xff00) | ((crc >> 8) & 0x00ff);
         
 		int ack = 0;
-	//	int attempts = 0;
-	//	unsigned char s;
+
 		int byte_read;
 		
 		uint16_t ball_x;
@@ -253,37 +227,10 @@ int main(int argc, char *argv[])
 
 		while (!ack)
 		{
-		  //printf("Sending (attempt %d)...\n", ++attempts);
 
-			//
-			// WRITE ME: Send message
-			//
-			//s = 0x0;
-			//write(ofd, &s, 1);
-			//write(ofd, &crc, 2);
-			//write(ofd, &n_read, 1);
-			//write(ofd, str, n_read);
-
-			//printf("Message sent, waiting for ack...\n ");
-
-			//
-			// WRITE ME: Wait for MSG_ACK or MSG_NACK
-			//
-            // a buffer to read the ack/nack msg
 			byte_read = 0;
 
-			// a new pointer only used to read ack/nack msg
-			//char new_pr[2];
-			// read the msg
-			//while (byte_read < 2)
-			  //{
-			  //byte_read += read(ifd, new_pr, 2);
-				//}
-			// receive and print the x position of ball in terminal
-			//ball_x = (new_pr[1] << 8) | new_pr[0];
-			//printf("ball_x: %d and ball_y: %d\n", ball_x, 0);
 
-			// a new pointer only used to read ack/nack msg
             
 			unsigned char new_pr[4];
             
@@ -292,8 +239,7 @@ int main(int argc, char *argv[])
 				byte_read += read(ifd, new_pr + byte_read, 4 - byte_read);
 			}
 			// receive and print the x position of ball in terminal
-//			ball_x = (((new_pr[1] << 8) & 0xff00) | (new_pr[0] & 0xff)) & 0xffff;
-//			ball_y = (((new_pr[3] << 8) & 0xff00) | (new_pr[2] & 0xff)) & 0xffff;
+
             ball_x = (new_pr[1] << 8) | new_pr[0];
             ball_y = (new_pr[3] << 8) | new_pr[2];
             printf("ball_x: %d and ball_y: %d\n", ball_x, ball_y);
@@ -302,8 +248,10 @@ int main(int argc, char *argv[])
 //            ball_y = (uint16_t)gety_butter(ball_y, b, a);
 //            printf("FILTERED!!! ball_x: %d and ball_y: %d\n", ball_x, ball_y);
             
-            int errX = getx_butter(ball_x, b, a) - 1635;
-            int errY = gety_butter(ball_y, b, a) - 1500;
+            //int errX = getx_butter(ball_x, b, a) - 1635;
+            //int errY = gety_butter(ball_y, b, a) - 1500;
+		int errX = ball_x - 1635;
+		int errY = ball_y - 1500;
             errSumX += errX;
             if (errSumX > 60000 || errSumX < -60000) errSumX = 0;
             errSumY += errY;
