@@ -134,8 +134,28 @@ void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt(void)
     CLEARBIT(IFS0bits.T1IF);
 }
 
+uint16_t prev_dutyX=0;
+uint16_t prev_dutyY=0;
+uint16_t dutyX=0; // this is what we get from server
+uint16_t dutyY=0;
+int itteration = 0;
+void __attribute__((__interrupt__, no_auto_psv)) _T2Interrupt(void)
+{
+    uint16_t delta_x = (dutyX - prev_dutyX) / (5 - itteration);
+    prev_dutyX = prev_dutyX + delta_x;
+    motor_set_duty(0, prev_dutyX);
+    
+    uint16_t delta_y = (dutyY - prev_dutyY) / (5 - itteration);
+    prev_dutyY = prev_dutyY + delta_y;
+    motor_set_duty(0, prev_dutyY);
+    if (itteration < 4)
+        itteration++;
+    
+    CLEARBIT(IFS0bits.T2IF);
+}
+
 // Setup Timer 1 - interrupt every 0.05 sec using external clock
-void timer_init()
+void timer1_init()
 {
     // Enable LPOSCEN
     __builtin_write_OSCCONL(OSCCONL | 2);
@@ -160,6 +180,32 @@ void timer_init()
     // Start Timer
     T1CONbits.TON = 1;
 }
+
+// Setup Timer 2 - interrupt every 0.01 sec using internal clock
+void timer2_init()
+{
+    // Enable LPOSCEN
+    __builtin_write_OSCCONL(OSCCONL | 2);
+    // Disable Timer
+    T2CONbits.TON = 0;
+    // Select internal clock 12,800,000
+    T2CONbits.TCS = 0;
+    // Select 1:256 Prescaler
+    T2CONbits.TCKPS = 0b11;
+    // Clear timer register
+    TMR2 = 0x00;
+    // Load the period value
+    PR2 = 520;
+    // Set Timer1 Interrupt Priority Level
+    IPC1bits.T2IP = 0x01;
+    // Clear Timer1 Interrupt Flag
+    IFS0bits.T2IF = 0;
+    // Enable Timer1 interrupt
+    IEC0bits.T2IE = 1;
+    // Start Timer
+    T2CONbits.TON = 1;
+}
+
 
 int main()
 {
@@ -186,10 +232,13 @@ int main()
     // Current str
     unsigned char new_pr[4];
     int byte_read = 0;
-    uint16_t dutyX;
-    uint16_t dutyY;
+//    uint16_t dutyX;
+//    uint16_t dutyY;
             
-    timer_init();
+    // timer1 sends ball position
+    timer1_init();
+    // timer2 smoothly sets servo angle
+    timer2_init();
     
     // Populate buffer
     while (1)
@@ -202,6 +251,9 @@ int main()
             
             // If we received an entire packet
             if (byte_read == 4) {
+                prev_dutyX = dutyX;
+                prev_dutyY = dutyY;
+                
                 dutyX = (new_pr[1] << 8) | new_pr[0];
                 dutyY = (new_pr[3] << 8) | new_pr[2];
                 
@@ -209,9 +261,7 @@ int main()
                 lcd_locate(0, 5);
                 lcd_printf("dutyX:%d,dutyY:%d\n", dutyX, dutyY);
                 __C30_UART = 2;
-                
-                motor_set_duty(0, dutyX);
-                motor_set_duty(1, dutyY);
+                itteration = 0;
                 
                 byte_read = 0;
             }
