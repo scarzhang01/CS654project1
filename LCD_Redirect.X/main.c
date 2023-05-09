@@ -138,18 +138,36 @@ uint16_t prev_dutyX=0;
 uint16_t prev_dutyY=0;
 uint16_t dutyX=0; // this is what we get from server
 uint16_t dutyY=0;
-int itteration = 0;
+//int itteration = 0;
+int16_t delta_x=0;
+int16_t delta_y=0;
+uint16_t cur_dutyX=0;
+uint16_t cur_dutyY=0;
+
 void __attribute__((__interrupt__, no_auto_psv)) _T2Interrupt(void)
 {
-    uint16_t delta_x = (dutyX - prev_dutyX) / (5 - itteration);
-    prev_dutyX = prev_dutyX + delta_x;
-    motor_set_duty(0, prev_dutyX);
+//    uint16_t delta_x = (dutyX - prev_dutyX) / (5 - itteration);
+//    prev_dutyX = prev_dutyX + delta_x;
+//    motor_set_duty(0, prev_dutyX);
+//    
+//    uint16_t delta_y = (dutyY - prev_dutyY) / (5 - itteration);
+//    prev_dutyY = prev_dutyY + delta_y;
+//    motor_set_duty(0, prev_dutyY);
+//    if (itteration < 4)
+//        itteration++;
     
-    uint16_t delta_y = (dutyY - prev_dutyY) / (5 - itteration);
-    prev_dutyY = prev_dutyY + delta_y;
-    motor_set_duty(0, prev_dutyY);
-    if (itteration < 4)
-        itteration++;
+    delta_x = (dutyX - prev_dutyX) / 5;
+    cur_dutyX += delta_x;
+    motor_set_duty(0, cur_dutyX);
+    
+    delta_y = (dutyY - prev_dutyY) / 5;
+    cur_dutyY += delta_y;
+    motor_set_duty(1, cur_dutyY);
+    
+    __C30_UART = 1;
+    lcd_locate(0, 6);
+    lcd_printf("dX:%d,dY:%d\n", cur_dutyX, cur_dutyY);
+    __C30_UART = 2;
     
     CLEARBIT(IFS0bits.T2IF);
 }
@@ -172,7 +190,7 @@ void timer1_init()
     // Load the period value
     PR1 = 1639;
     // Set Timer1 Interrupt Priority Level
-    IPC0bits.T1IP = 0x01;
+    IPC0bits.T1IP = 0x02;
     // Clear Timer1 Interrupt Flag
     IFS0bits.T1IF = 0;
     // Enable Timer1 interrupt
@@ -190,6 +208,8 @@ void timer2_init()
     T2CONbits.TON = 0;
     // Select internal clock 12,800,000
     T2CONbits.TCS = 0;
+     // Ignore timer 2 gated time accumulation enable bit
+    CLEARBIT(T2CONbits.TGATE);
     // Select 1:256 Prescaler
     T2CONbits.TCKPS = 0b11;
     // Clear timer register
@@ -238,7 +258,7 @@ int main()
     // timer1 sends ball position
     timer1_init();
     // timer2 smoothly sets servo angle
-    timer2_init();
+//    timer2_init();
     
     // Populate buffer
     while (1)
@@ -251,8 +271,8 @@ int main()
             
             // If we received an entire packet
             if (byte_read == 4) {
-                prev_dutyX = dutyX;
-                prev_dutyY = dutyY;
+//                prev_dutyX = dutyX;
+//                prev_dutyY = dutyY;
                 
                 dutyX = (new_pr[1] << 8) | new_pr[0];
                 dutyY = (new_pr[3] << 8) | new_pr[2];
@@ -261,8 +281,26 @@ int main()
                 lcd_locate(0, 5);
                 lcd_printf("dutyX:%d,dutyY:%d\n", dutyX, dutyY);
                 __C30_UART = 2;
-                itteration = 0;
+//                itteration = 0;
                 
+                motor_set_duty(0, dutyX);                
+                motor_set_duty(1, dutyY);
+                
+//                delta_x = (dutyX - prev_dutyX) / 5 ;
+//                delta_y = (dutyY - prev_dutyY) / 5;
+//                int i=0;
+//                for(i=0; i<5; i++){
+//                    cur_dutyX += delta_x;
+//                    motor_set_duty(0, cur_dutyX);
+//                    cur_dutyY += delta_y;
+//                    motor_set_duty(1, cur_dutyY);
+//                    __C30_UART = 1;
+//                    lcd_locate(0, 6);
+//                    lcd_printf("dX:%d,dY:%d\n", cur_dutyX, cur_dutyY);
+//                __C30_UART = 2;
+//                }
+//              
+
                 byte_read = 0;
             }
             
