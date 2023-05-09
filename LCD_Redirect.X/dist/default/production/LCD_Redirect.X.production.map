@@ -469,7 +469,7 @@ __FSS
 
 __FGS             0xf80004          0x2
  *(__FGS.sec*)
- __FGS.sec        0xf80004          0x2 /CW/_FGShü]	Œü]	__FGS.sec
+ __FGS.sec        0xf80004          0x2 /CW/_FGShüË	ŒüË	__FGS.sec
                   0xf80004                  _FGS.sec
 
 __FOSCSEL         0xf80006          0x2
@@ -1837,7 +1837,7 @@ LOAD /opt/microchip/xc16/v1.41/bin/bin/../../lib/libm-coff.a
 LOAD /opt/microchip/xc16/v1.41/bin/bin/../../lib/libc-coff.a
 END GROUP
 OUTPUT(dist/default/production/LCD_Redirect.X.production.cof coff-pic30)
-LOAD /CW/_FGShü]	Œü]	__FGS.sec
+LOAD /CW/_FGShüË	ŒüË	__FGS.sec
 LOAD jump_table
 LOAD data_init
 LOAD default_isr
