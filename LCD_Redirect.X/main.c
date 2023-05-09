@@ -95,7 +95,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt(void)
     // Read x axis mode
     touch_select_dim(0);
     // Delay for signal to be stable
-    __delay_ms(20);
+    __delay_ms(10);
 
     for (index = 0; index < 5; index++)
     {
@@ -103,7 +103,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt(void)
     }
     touch_select_dim(1);
     // Delay for signal to be stable
-    __delay_ms(20);
+    __delay_ms(10);
 
     for (index = 0; index < 5; index++)
     {
@@ -134,7 +134,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt(void)
     CLEARBIT(IFS0bits.T1IF);
 }
 
-// Setup Timer 1 - interrupt every 2 sec using external clock
+// Setup Timer 1 - interrupt every 0.05 sec using external clock
 void timer_init()
 {
     // Enable LPOSCEN
@@ -145,12 +145,12 @@ void timer_init()
     T1CONbits.TCS = 1;
     // Disable Synchronization
     T1CONbits.TSYNC = 0;
-    // Select 1:256 Prescaler
-    T1CONbits.TCKPS = 0b11;
+    // Select 1:1 Prescaler
+    T1CONbits.TCKPS = 0b00;
     // Clear timer register
     TMR1 = 0x00;
     // Load the period value
-    PR1 = 216;
+    PR1 = 1639;
     // Set Timer1 Interrupt Priority Level
     IPC0bits.T1IP = 0x01;
     // Clear Timer1 Interrupt Flag

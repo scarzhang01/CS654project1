@@ -18,6 +18,7 @@
 #include <fcntl.h>
 #include "pc_crc16.h"
 #include "lab3.h"
+#include <math.h>
 
 
 #define GREETING_STR                \
@@ -33,17 +34,17 @@
 
 #define TROLL_PATH "./lab3_troll"
 
-#define KPX 0.0002
-#define KDX 0.0001
-#define KIX 0.000001
+#define KPX 0.0004
+#define KDX 0.0003
+#define KIX 0.0000
 
-#define KPY 0.0002
-#define KDY 0.0001
-#define KIY 0.000001
+#define KPY 0.000
+#define KDY 0.000
+#define KIY 0.00000
 
-#define BUTTERFILT_ORD 5
-double b[BUTTERFILT_ORD + 1] = {9.2540162, 4.6270081, 9.2540162, 9.2540162, 4.6270081, 9.2540162};
-double a[BUTTERFILT_ORD + 1] = {1.0, -4.837342, 9.3625201, -9.062853, 4.3875359, -0.849859};
+#define BUTTERFILT_ORD 4
+double b[BUTTERFILT_ORD + 1] = {0.2346995, 0.93879798, 1.40819697, 0.93879798, 0.2346995};
+double a[BUTTERFILT_ORD + 1] = {1.0, 1.30660514, 1.03045384, 0.36236904, 0.0557639};
 
 void printBits(uint16_t num) {
   int i = 0;
@@ -201,14 +202,17 @@ int main(int argc, char *argv[])
 	// length of str/message body
 	unsigned char n_read = 0;
     
-    uint16_t eXp = 0;
-    uint16_t eYp = 0;
+    int eXp = 0;
+    int eYp = 0;
     
     uint16_t errSumX = 0;
     uint16_t errSumY = 0;
     
     double pm1 = 0.9;
     double pm2 = 0.9;
+    
+    double ppm1 = 0.9;
+    double ppm2 = 0.9;
     
 	while (1)
 	{
@@ -291,29 +295,32 @@ int main(int argc, char *argv[])
 //			ball_x = (((new_pr[1] << 8) & 0xff00) | (new_pr[0] & 0xff)) & 0xffff;
 //			ball_y = (((new_pr[3] << 8) & 0xff00) | (new_pr[2] & 0xff)) & 0xffff;
             ball_x = (new_pr[1] << 8) | new_pr[0];
-			ball_y = (new_pr[3] << 8) | new_pr[2];
-			printf("ball_x: %d and ball_y: %d\n", ball_x, ball_y);
+            ball_y = (new_pr[3] << 8) | new_pr[2];
+            printf("ball_x: %d and ball_y: %d\n", ball_x, ball_y);
             
 //            ball_x = (uint16_t)getx_butter(ball_x, b, a);
 //            ball_y = (uint16_t)gety_butter(ball_y, b, a);
 //            printf("FILTERED!!! ball_x: %d and ball_y: %d\n", ball_x, ball_y);
             
-            uint16_t errX = ball_x - 1635;
-            uint16_t errY = ball_y - 1500;
+            int errX = getx_butter(ball_x, b, a) - 1635;
+            int errY = gety_butter(ball_y, b, a) - 1500;
             errSumX += errX;
-            if (errSumX > 30000 || errSumX < -30000) errSumX = 0;
+            if (errSumX > 60000 || errSumX < -60000) errSumX = 0;
             errSumY += errY;
-            if (errSumY > 30000 || errSumY < -30000) errSumY = 0;
+            if (errSumY > 60000 || errSumY < -60000) errSumY = 0;
 
             double angleX = 0.0 - KPX * (double)errX * (3.1415926 / 2.0) - KDX * (double)(errX - eXp) / 0.05 * (3.1415926 / 2.0) - KIX * (double)(errSumX) * 0.05 * (3.1415926 / 2.0);
             double angleY = 0.0 - KPY * (double)errY * (3.1415926 / 2.0) - KDY * (double)(errY - eYp) / 0.05 * (3.1415926 / 2.0) - KIY * (double)(errSumY) * 0.05 * (3.1415926 / 2.0);
+            printf("angleX: %f and angleY: %f\n", angleX, angleY);
             
             eXp = errX;
             eYp = errY;
             
-            double m1 = ((2.1 - 0.9) / 3.1415926 * (angleX + 3.1415926 / 2.0) + 0.9) * 0.3 + pm1 * 0.7;
+            double m1 = ((2.1 - 0.9) / 3.1415926 * (angleX + 3.1415926 / 2.0) + 0.9);
             double m2 = ((2.1 - 0.9) / 3.1415926 * (angleY + 3.1415926 / 2.0) + 0.9) * 0.3 + pm2 * 0.7;
-            
+            printf("m1: %f and m2: %f\n", m1, m2);
+            ppm1 = pm1;
+            ppm2 = pm2;
             pm1 = m1;
             pm2 = m2;
             
@@ -332,7 +339,7 @@ int main(int argc, char *argv[])
             msg[2] = dutyY & 0xff;
             msg[3] = (dutyY >> 8) & 0xff;
             
-	printf("dutyX: %d and dutyY: %d\n", dutyX, dutyY);
+	printf("dutyX: %u and dutyY: %u\n", dutyX, dutyY);
 	write(ofd, msg, 4);
 		}
 		
