@@ -34,11 +34,11 @@
 
 #define TROLL_PATH "./lab3_troll"
 
-#define KPX 0.0003
-#define KDX 0.00008
+#define KPX 0.00035
+#define KDX 0.00006
 #define KIX 0.0000
 
-#define KPY 0.0003
+#define KPY 0.00035
 #define KDY 0.00008
 #define KIY 0.00000
 
