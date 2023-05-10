@@ -35,12 +35,12 @@
 #define TROLL_PATH "./lab3_troll"
 
 #define KPX 0.00035
-#define KDX 0.00006
-#define KIX 0.0000
+#define KDX 0.000095
+#define KIX 0.0075
 
-#define KPY 0.00035
-#define KDY 0.00008
-#define KIY 0.00000
+#define KPY 0.00025
+#define KDY 0.0002
+#define KIY 0.01
 
 #define BUTTERFILT_ORD 4
 double b[BUTTERFILT_ORD + 1] = {0.2346995, 0.93879798, 1.40819697, 0.93879798, 0.2346995};
@@ -157,34 +157,16 @@ int main(int argc, char *argv[])
 	}
 	printf(GREETING_STR);
 
-	// Start the troll if necessary
-	if (troll)
-	{
-		// Open troll process (lab5_troll) for output only
-		FILE *pfile;   // Process FILE for troll (used locally only)
-		char cmd[128]; // Shell command
 
-		snprintf(cmd, 128, TROLL_PATH " -p%f %s %s", troll_pct,
-				 (VERBOSE) ? "-v" : "", dev_name);
+	ofd = ifd; // Use the serial port for both input and output
 
-		pfile = popen(cmd, "w");
-		if (!pfile)
-		{
-			perror(TROLL_PATH);
-			exit(-1);
-		}
-		ofd = fileno(pfile);
-	}
-	else
-		ofd = ifd; // Use the serial port for both input and output
-
-	//
-	// WRITE ME: Set up the serial port parameters and data format
+	
+	
 	//
 	/* Get old settings to restore at exit */
 	tcgetattr(ifd, &oldtio);
 	/* Setup desired settings */
-	// B9600: baud rate
+	// B115200: baud rate
 	// CS8: 8 data bits
 	// CLOCAL: ignore modem control lines
 	// CREAD: if read
@@ -227,11 +209,7 @@ int main(int argc, char *argv[])
 
 		while (!ack)
 		{
-
 			byte_read = 0;
-
-
-            
 			unsigned char new_pr[4];
             
 			while (byte_read < 4)
@@ -240,9 +218,9 @@ int main(int argc, char *argv[])
 			}
 			// receive and print the x position of ball in terminal
 
-            ball_x = (new_pr[1] << 8) | new_pr[0];
-            ball_y = (new_pr[3] << 8) | new_pr[2];
-            printf("ball_x: %d and ball_y: %d\n", ball_x, ball_y);
+            		ball_x = (new_pr[1] << 8) | new_pr[0];
+            		ball_y = (new_pr[3] << 8) | new_pr[2];
+            		printf("ball_x: %d and ball_y: %d\n", ball_x, ball_y);
             
 //            ball_x = (uint16_t)getx_butter(ball_x, b, a);
 //            ball_y = (uint16_t)gety_butter(ball_y, b, a);
@@ -250,8 +228,8 @@ int main(int argc, char *argv[])
             
             //int errX = getx_butter(ball_x, b, a) - 1635;
             //int errY = gety_butter(ball_y, b, a) - 1500;
-		int errX = ball_x - 1635;
-		int errY = ball_y - 1500;
+		int errX = ball_x - 2300;
+		int errY = ball_y - 1800;
             errSumX += errX;
             if (errSumX > 60000 || errSumX < -60000) errSumX = 0;
             errSumY += errY;
@@ -287,15 +265,15 @@ int main(int argc, char *argv[])
             msg[2] = dutyY & 0xff;
             msg[3] = (dutyY >> 8) & 0xff;
             
-	printf("dutyX: %u and dutyY: %u\n", dutyX, dutyY);
-	write(ofd, msg, 4);
+		printf("dutyX: %u and dutyY: %u\n", dutyX, dutyY);
+		write(ofd, msg, 4);
 		}
 		
 		printf("\n");
 	}
 
 	//
-	// WRITE ME: Reset the serial port parameters
+	// Reset the serial port parameters
 	//
 	tcflush(ifd, TCIFLUSH);
 	tcsetattr(ifd, TCSANOW, &oldtio);
